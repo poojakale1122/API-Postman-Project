@@ -1,64 +1,46 @@
-\# 📚 BookShelf API Automation Project
+# 📚 BookShelf API Automation
 
 
+## **Project Overview**
+This project demonstrates **API automation testing using Postman** for the BookShelf API.  
+It is designed to highlight **best practices in API testing**, including:
 
-A sample API automation project using \*\*Postman (Web)\*\* and \*\*REST Assured (Java)\*\* to test a fictional Book Management system.
+- Status code validation  
+- Mandatory field checks  
+- Schema validation  
+- Dynamic data handling (environment variables)  
+- Manual execution workflow (no CLI/Newman required)
 
+---
 
-
-\## 🚀 Project Overview
-
-This project covers complete API testing lifecycle:
-
-\- CRUD operations (Create, Read, Update, Delete)
-
-\- Dynamic variable handling
-
-\- Assertion of response codes and data
-
-\- Schema Validation
-
-\- Reusability through environments
-
-
-
-\## 🔧 Tools \& Technologies
-
-\- \*\*Postman (Web)\*\*
-
-\- \*\*GitHub (Version Control)\*\*
+## **Folder Structure**
+BookShelf-API-Automation/
+├── NewProj/
+│ ├── BookShelf API Automation-poojak.postman_collection.json
+│ └── BookShelf.postman_environment.json
+| |__Result Run.png
+| |__Result Screenshots.png
+└── README.md
 
 
+---
 
-\## 🧩 API Endpoints
+## **Manual Execution Steps**
+1. **Open Postman** (Web or Desktop).  
+2. **Import Collection**  
+   - Click `Import` → Choose `BookShelf API Automation-poojak.postman_collection.json`.  
+3. **Select Environment**  
+   - Click `Environment` → Import `BookShelf.postman_environment.json`.  
+4. **Run Requests**  
+   - Open a request → Click **Send** → Observe response.  
+5. **Check Test Results**  
+   - Go to **Tests tab / Test Results** in Postman.  
+   - Passed tests appear **green**, failed tests **red**.  
 
-| Method | Endpoint | Description |
+---
 
-|---------|-----------|-------------|
+## **Implemented Test Scenarios**
 
-| POST | /products/add | Add new book |
-
-| GET | /products | Get book list |
-
-| GET | /products/:id | Get specific book |
-
-| PUT | /products/:id | Update book |
-
-| DELETE | /products/:id | Delete book |
-
-
-
-\## ⚙️ How to Run in Postman
-
-1\. Import the collection and environment.
-
-2\. Run the collection using the Postman \*\*Collection Runner\*\* or \*\*Newman CLI\*\*.
-
-
-
-```bash
-
-newman run BookShelf\_API\_Automation.postman\_collection.json -e BookShelf\_Env.postman\_environment.json
-
-
-
+### 1️⃣ Status Code Validation
+```javascript
+pm.test("Status code is 200", () => pm.response.to.have.status(200));
