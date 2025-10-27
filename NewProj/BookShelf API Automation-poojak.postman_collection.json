@@ -1,0 +1,452 @@
+{
+	"info": {
+		"_postman_id": "a7057aa2-72db-44ea-9adc-d45bc616bdae",
+		"name": "BookShelf API Automation-poojak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "48503600",
+		"_collection_link": "https://kaalepuja-7683718.postman.co/workspace/59fefcee-01da-4fee-8bf9-cddab7840357/collection/48503600-a7057aa2-72db-44ea-9adc-d45bc616bdae?action=share&source=collection_link&creator=48503600"
+	},
+	"item": [
+		{
+			"name": "NewProj",
+			"item": [
+				{
+					"name": "Add Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 201\", ()=> \r",
+									"  \r",
+									"    pm.expect(pm.response.code).to.be.oneOf([200,201]))\r",
+									"    pm.test(\"Response has book ID\", () => {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.environment.set(\"bookId\", jsonData.id);\r",
+									"    pm.expect(jsonData.title).to.eql(\"Automation Testing in Action\");\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Automation Testing in Action\",\r\n    \"author\": \"John Doe\",\r\n    \"price\": 450\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/add",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get List",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"\r",
+									"var firstFiveIds = jsonData.products.slice(0, 5).map(p => p.id);\r",
+									"console.log(\"First 5 Product IDs:\", firstFiveIds);\r",
+									"for (let i = 0; i < firstFiveIds.length; i++) {\r",
+									"    pm.collectionVariables.set(`productId_${i+1}`, firstFiveIds[i]);\r",
+									"}\r",
+									"pm.test(\"Stored first 5 product IDs as collection variables\", () => {\r",
+									"    pm.expect(firstFiveIds.length).to.eql(5);\r",
+									"});\r",
+									"pm.test(\"Verify Book list not Empty\", () => {\r",
+									"    pm.expect(jsonData.products.length).to.be.above(1);\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/product",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"product"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Book by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Book retrived succussfully:\",() => \r",
+									"    pm.expect(pm.response.status).to.eql(\"OK\")\r",
+									"\r",
+									");"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId_2}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId_2}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Book Price",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Book updated successfully\", () => pm.response.to.have.status(200));"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"price\": 500\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId_1}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId_1}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Retrieve list of products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Status code is 200\", () => pm.response.to.have.status(200));\r",
+									"console.log(jsonData.products.slice(0,5));\r",
+									"pm.test(\"First 5 products have mandatory fields and valid data\", () => {\r",
+									"    let firstFive = jsonData.products.slice(0, 5);\r",
+									"    pm.expect(firstFive.length).to.be.above(0); // Ensure products exist\r",
+									"\r",
+									"    firstFive.forEach((product, index) => {\r",
+									"        pm.expect(product).to.have.property(\"id\").that.is.a(\"number\");\r",
+									"        pm.expect(product).to.have.property(\"title\").that.is.a(\"string\").and.not.empty;\r",
+									"        pm.expect(product).to.have.property(\"price\").that.is.a(\"number\").and.at.least(0);\r",
+									"        pm.expect(product).to.have.property(\"stock\").that.is.a(\"number\").and.at.least(0);\r",
+									"    });\r",
+									"});\r",
+									"let productIds = jsonData.products.slice(0, 5).map(p => p.id);\r",
+									"pm.collectionVariables.set(\"first5ProductIds\", JSON.stringify(productIds));\r",
+									"\r",
+									"\r",
+									"console.log(\"First 5 product IDs stored in collection variable:\", productIds);\r",
+									"console.log(\"First 5 products data:\", jsonData.products.slice(0, 5));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Automation Testing in Action\",\r\n    \"author\": \"John Doe\",\r\n    \"price\": 450\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Book",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Book deleted successfully\", () => \r",
+									"pm.response.to.have.status(200) // 204 No Content indicates successful deletion without returning any content.\r",
+									")"
+								],
+								"type": "text/javascript",
+								"packages": {},
+								"requests": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId_4}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId_4}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validate Book",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Automation Testing in Action\",\r\n    \"author\": \"John Doe\",\r\n    \"price\": 450\r\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/{{productId_4}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"{{productId_4}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Delete Book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Book deleted successfully\", () => \r",
+							"pm.response.to.have.status(200) // 204 No Content indicates successful deletion without returning any content.\r",
+							")"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/products/{{productId_4}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"products",
+						"{{productId_4}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create NewBook Entry",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "https://dummyjson.com/products/add",
+					"protocol": "https",
+					"host": [
+						"dummyjson",
+						"com"
+					],
+					"path": [
+						"products",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Book List",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Get Book By ID",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "Update Book",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "https://dummyjson.com/products/1",
+					"protocol": "https",
+					"host": [
+						"dummyjson",
+						"com"
+					],
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Book",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://dummyjson.com/products/1",
+					"protocol": "https",
+					"host": [
+						"dummyjson",
+						"com"
+					],
+					"path": [
+						"products",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "New Request",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "productId_1",
+			"value": ""
+		},
+		{
+			"key": "productId_2",
+			"value": ""
+		},
+		{
+			"key": "productId_3",
+			"value": ""
+		},
+		{
+			"key": "productId_4",
+			"value": ""
+		},
+		{
+			"key": "productId_5",
+			"value": ""
+		},
+		{
+			"key": "first5ProductIds",
+			"value": ""
+		}
+	]
+}
